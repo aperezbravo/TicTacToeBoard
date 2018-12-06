@@ -7,6 +7,8 @@
 //Constructor sets an empty board and specifies it is X's turn first
 TicTacToeBoard::TicTacToeBoard()
 {
+  spaces_available = 9;
+  w_l = false;
   turn = X;
   for(int i=0; i<BOARDSIZE; i++)
     for(int j=0; j<BOARDSIZE; j++)
@@ -41,11 +43,71 @@ Piece TicTacToeBoard::toggleTurn()
 **/ 
 Piece TicTacToeBoard::placePiece(int row, int column)
 {
-  if(board[row][column] == Blank)
+  Piece placed;
+  //if(board[row][column] == Blank)
+  if(row > 2 || column > 2)
+  {
+    return Invalid;
+  }
+  placed = board[row][column];
+  if(placed == Blank)
   {
     board[row][column] = turn;
-    toggleTurn();
+    spaces_available -= 1;
+    placed = turn;
+    if(board[0][0] == board[0][1] && board [0][0] == board[0][2])
+    {
+      w_l = true;
+      return getWinner();
+    }
+    else if(board[1][0] == board[1][1] && board[1][0] == board[1][2])
+    {
+      w_l = true;
+      return getWinner();
+    }
+    else if(board[2][0] == board[2][1] && board[2][0] == board[2][2])
+    {
+      w_l = true;
+      return getWinner();
+    }
+    else if(board[0][0] == board[1][0] && board[0][0] == board[2][0])
+    {
+      w_l = true;
+      return getWinner(); 
+    }
+    else if(board[0][1] == board[1][1] && board[0][1] == board[2][1])
+    {
+      w_l = true;
+      return getWinner();
+    }
+    else if(board[0][2] == board[1][2] && board[0][2] == board[2][2])
+    {
+      w_l = true;
+      return getWinner();
+    }
+    else if(board[0][0] == board[1][2] && board[0][0] == board[2][2])
+    {
+      w_l = true;
+      return getWinner();
+    }
+    else if(spaces_available == 0)
+    {
+      return getWinner(); 
+    }
+    else
+    {
+      toggleTurn();
+      return placed;
+    }  
   }
+  else if(placed != Blank)
+  {
+    return placed; 
+  }
+  /*else if(row > 2 || column > 2)
+  {
+    return Invalid;
+  }*/
   else 
   {
     return Invalid;
@@ -58,7 +120,19 @@ Piece TicTacToeBoard::placePiece(int row, int column)
 **/
 Piece TicTacToeBoard::getPiece(int row, int column)
 {
-  return Invalid;
+  Piece a = board[row][column];
+  if(row > 2 || column > 2)
+  { 
+    return Invalid;
+  }
+  else if(a != Blank)
+  {
+    return a;
+  }
+  else
+  {
+    return Blank;
+  }
 }
 
 /**
@@ -67,5 +141,16 @@ Piece TicTacToeBoard::getPiece(int row, int column)
 **/
 Piece TicTacToeBoard::getWinner()
 {
-  return Invalid;
+  if(w_l == true)
+  {
+    return turn;
+  }
+  else if(w_l == false)
+  {
+    return Blank;
+  }
+  else
+  {
+    return Invalid; 
+  }
 }
